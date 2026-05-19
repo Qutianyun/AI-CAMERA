@@ -1,8 +1,8 @@
 {
   "name": "AI CAMERA",
   "short_name": "AI CAMERA",
-  "description": "AI CAMERA PWA V3 Fast AI Template Matching",
-  "start_url": "./index.html?v=3",
+  "description": "AI CAMERA PWA V4 Dual Block Memory Loader",
+  "start_url": "./index.html?v=4",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f172a",
