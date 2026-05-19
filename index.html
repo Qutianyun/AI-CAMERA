@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#0f172a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="AI CAMERA" />
+<link rel="manifest" href="./manifest.json" />
+<link rel="apple-touch-icon" href="./icon-192.png" />
+<title>AI CAMERA PWA V2 AI MEMORY</title>
+<style>
+:root{--bg:#0f172a;--panel:#111827;--card:#1f2937;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--yellow:#d97706;--orange:#f97316;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#020617;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}.app{height:100svh;max-height:100svh;display:grid;grid-template-rows:1fr 4fr 1fr;padding:calc(6px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom));gap:6px;background:linear-gradient(180deg,#0f172a,#111827 48%,#020617)}
+.top,.mid,.bottom{min-height:0}.top{display:flex;align-items:center;justify-content:center;background:rgba(31,41,55,.68);border:1px solid var(--line);border-radius:18px;padding:6px}.modeBar{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.modeBtn{border:1px solid #475569;border-radius:999px;background:#0b1220;color:#cbd5e1;height:32px;line-height:30px;text-align:center;font-size:13px;font-weight:800;letter-spacing:.3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}.modeBtn.active{background:#2563eb;border-color:#93c5fd;color:#fff;box-shadow:0 0 0 2px rgba(96,165,250,.22),0 8px 18px rgba(37,99,235,.38)}
+.mid{position:relative;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#020617;display:flex;align-items:center;justify-content:center}.cameraLayer{position:absolute;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#020617}.cameraLayer video,.cameraLayer img{width:100%;height:100%;object-fit:cover;transform:scale(var(--zoom,1));transition:transform .12s ease;will-change:transform}.cameraLayer canvas{display:none}.placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;text-align:center;padding:20px}.guide{position:absolute;inset:9% 7%;border:2px dashed rgba(147,197,253,.92);border-radius:20px;pointer-events:none}.guide:before{content:"";position:absolute;inset:-2px;border-radius:20px;box-shadow:inset 0 0 0 1px rgba(15,23,42,.7)}.focusDot{position:absolute;left:50%;top:50%;width:20px;height:20px;margin-left:-10px;margin-top:-10px;border:2px solid rgba(255,255,255,.82);border-radius:50%;opacity:.8;pointer-events:none}.captureFlash{position:absolute;inset:0;background:white;opacity:0;pointer-events:none}.captureFlash.on{animation:flash .22s ease}@keyframes flash{0%{opacity:0}35%{opacity:.62}100%{opacity:0}}
+.controls{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.28);backdrop-filter:blur(10px);padding:7px 9px;border-radius:999px}.iconBtn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(148,163,184,.35);display:flex;align-items:center;justify-content:center;font-size:21px;background:rgba(15,23,42,.82);color:#f8fafc}.iconBtn.primary{background:#2563eb;border-color:#93c5fd}.iconBtn.good{background:#16a34a;border-color:#86efac}.iconBtn.off{background:#334155}.iconBtn:disabled{opacity:.42}.zoomBox{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;background:rgba(15,23,42,.5);border:1px solid rgba(148,163,184,.24);border-radius:999px;padding:6px}.zoomBtn{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(15,23,42,.86);border:1px solid rgba(148,163,184,.35);color:#fff}.zoomVal{font-size:10px;text-align:center;color:#cbd5e1;line-height:1}.busy{position:absolute;left:10px;top:10px;background:rgba(15,23,42,.78);border:1px solid rgba(148,163,184,.28);border-radius:999px;padding:6px 10px;font-size:12px;color:#dbeafe;display:none}.busy.show{display:block}.spinner{display:inline-block;width:10px;height:10px;border:2px solid rgba(219,234,254,.3);border-top-color:#dbeafe;border-radius:50%;animation:spin .8s linear infinite;margin-right:5px;vertical-align:-1px}@keyframes spin{to{transform:rotate(360deg)}}
+.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.resCard{min-height:0;background:rgba(31,41,55,.9);border:1px solid var(--line);border-radius:18px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center}.resLabel{font-size:11px;color:#94a3b8;margin-bottom:4px}.resValue{font-size:22px;font-weight:950;line-height:1;white-space:nowrap}.ok{color:#86efac}.ng{color:#fca5a5}.auto{color:#fde68a}.riskLow{color:#86efac}.riskMid{color:#fde68a}.riskHigh{color:#fca5a5}.hidden{display:none!important}
+@media(max-height:680px){.modeBtn{height:28px;line-height:26px;font-size:12px}.iconBtn{width:38px;height:38px;font-size:19px}.resValue{font-size:19px}.resLabel{font-size:10px}.controls{bottom:7px}.zoomBtn{width:30px;height:30px}.top{border-radius:15px}.mid{border-radius:18px}.resCard{border-radius:15px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="top">
+    <div class="modeBar" id="modeBar">
+      <div class="modeBtn" data-mode="eng">英文</div>
+      <div class="modeBtn" data-mode="jpn">日本</div>
+      <div class="modeBtn" data-mode="kor">韩文</div>
+      <div class="modeBtn active" data-mode="random">随机</div>
+    </div>
+  </section>
+  <section class="mid" id="cameraBox">
+    <div class="cameraLayer">
+      <video id="video" autoplay muted playsinline webkit-playsinline></video>
+      <img id="preview" class="hidden" alt="capture preview" />
+      <canvas id="canvas"></canvas>
+    </div>
+    <div id="placeholder" class="placeholder">点击 📷 打开摄像头</div>
+    <div class="guide"></div><div class="focusDot"></div><div id="flash" class="captureFlash"></div>
+    <div id="busy" class="busy"><span class="spinner"></span><span id="busyText">识别中</span></div>
+    <div class="zoomBox">
+      <div id="zoomIn" class="zoomBtn">＋</div>
+      <div id="zoomVal" class="zoomVal">1.0x</div>
+      <div id="zoomOut" class="zoomBtn">−</div>
+    </div>
+    <div class="controls">
+      <button id="startBtn" class="iconBtn primary" aria-label="打开摄像头">📷</button>
+      <button id="stopBtn" class="iconBtn off" aria-label="关闭摄像头">■</button>
+      <button id="captureBtn" class="iconBtn good" aria-label="拍照识别" disabled>◎</button>
+    </div>
+  </section>
+  <section class="bottom">
+    <div class="resCard"><div class="resLabel">判断</div><div id="judge" class="resValue auto">—</div></div>
+    <div class="resCard"><div class="resLabel">语言</div><div id="lang" class="resValue auto">—</div></div>
+    <div class="resCard"><div class="resLabel">风险</div><div id="risk" class="resValue auto">—</div></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let stream=null, mode='random', zoom=1, recognizing=false, lastTouchDist=0;
+const langMap={eng:'英文',jpn:'日本',kor:'韩文',unknown:'未知'};
+const MEM_KEY='AI_CAMERA_V2_MEMORY';
+function loadMemory(){try{return JSON.parse(localStorage.getItem(MEM_KEY)||'[]')}catch(e){return []}}
+function saveMemory(arr){localStorage.setItem(MEM_KEY,JSON.stringify(arr.slice(-300)))}
+function addMemory(lang,text,counts,conf){const arr=loadMemory();arr.push({id:Date.now()+Math.random(),lang,text:(text||'').slice(0,500),counts,conf:Math.round(conf||0),ts:Date.now()});saveMemory(arr)}
+function setMode(m){mode=m;document.querySelectorAll('.modeBtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));resetResult(false)}
+document.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+function resetResult(clearPreview=true){$('judge').textContent='—';$('judge').className='resValue auto';$('lang').textContent='—';$('lang').className='resValue auto';$('risk').textContent='—';$('risk').className='resValue auto';if(clearPreview){$('preview').classList.add('hidden');$('video').classList.remove('hidden')}}
+function setBusy(on,msg='识别中'){$('busy').classList.toggle('show',on);$('busyText').textContent=msg;recognizing=on;$('captureBtn').disabled=on||!stream}
+function updateZoom(){document.documentElement.style.setProperty('--zoom',zoom.toFixed(2));$('zoomVal').textContent=zoom.toFixed(1)+'x'}
+function changeZoom(delta){zoom=Math.max(1,Math.min(3,zoom+delta));updateZoom()}
+$('zoomIn').addEventListener('click',()=>changeZoom(.2));$('zoomOut').addEventListener('click',()=>changeZoom(-.2));updateZoom();
+$('cameraBox').addEventListener('touchstart',e=>{if(e.touches.length===2){lastTouchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}});
+$('cameraBox').addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(lastTouchDist){zoom=Math.max(1,Math.min(3,zoom+(d-lastTouchDist)/260));updateZoom()}lastTouchDist=d}},{passive:false});
+async function startCamera(){resetResult();$('placeholder').classList.add('hidden');if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$('placeholder').textContent='浏览器不支持摄像头';$('placeholder').classList.remove('hidden');return}try{stopCamera(false);stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});const v=$('video');v.srcObject=stream;v.setAttribute('playsinline','true');v.setAttribute('webkit-playsinline','true');v.muted=true;await v.play();$('captureBtn').disabled=false;$('placeholder').classList.add('hidden')}catch(e){$('placeholder').textContent='摄像头打开失败';$('placeholder').classList.remove('hidden')}}
+function stopCamera(show=true){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('captureBtn').disabled=true;if(show){$('placeholder').textContent='点击 📷 打开摄像头';$('placeholder').classList.remove('hidden')}}
+$('startBtn').addEventListener('click',startCamera);$('stopBtn').addEventListener('click',()=>stopCamera(true));$('captureBtn').addEventListener('click',captureAndRecognize);
+function getCounts(text){return{jpnKana:(text.match(/[\u3040-\u30ff]/g)||[]).length,kor:(text.match(/[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g)||[]).length,latin:(text.match(/[A-Za-z]/g)||[]).length,cjk:(text.match(/[\u4e00-\u9fff]/g)||[]).length,digit:(text.match(/[0-9]/g)||[]).length,total:(text.match(/[A-Za-z0-9\u3040-\u30ff\uac00-\ud7af\u1100-\u11ff\u3130-\u318f\u4e00-\u9fff]/g)||[]).length}}
+function detectLanguage(text){const c=getCounts(text||'');const scores={jpn:c.jpnKana*3+c.cjk*.55,kor:c.kor*3,eng:c.latin*1.15};const s=Object.entries(scores).sort((a,b)=>b[1]-a[1]);let best=s[0][0],bestScore=s[0][1],second=s[1][1];if(c.total<3||bestScore<3)best='unknown';let ambiguity=best==='unknown'?1:Math.min(1,second/(bestScore||1));return{best,counts:c,scores,ambiguity}}
+function countSimilarity(a,b){const keys=['jpnKana','kor','latin','cjk','digit'];let diff=0,sum=0;keys.forEach(k=>{diff+=Math.abs((a[k]||0)-(b[k]||0));sum+=Math.max((a[k]||0),(b[k]||0))});return sum?Math.max(0,1-diff/sum):0}
+function textSimilarity(a,b){a=(a||'').toLowerCase();b=(b||'').toLowerCase();if(!a||!b)return 0;const grams=s=>{const arr=[];for(let i=0;i<s.length-1;i++)arr.push(s.slice(i,i+2));return arr};const A=new Set(grams(a)),B=new Set(grams(b));let inter=0;A.forEach(x=>{if(B.has(x))inter++});return inter/Math.max(1,Math.min(A.size,B.size))}
+function bestMemoryMatch(lang,text,counts){const mem=loadMemory().filter(x=>x.lang===lang);let best={score:0,item:null};mem.forEach(m=>{const sc=Math.max(textSimilarity(text,m.text),countSimilarity(counts,m.counts));if(sc>best.score)best={score:sc,item:m}});return best}
+function calcRisk(detected,text,ocrConf){let risk=55;const c=detected.counts;const strength=Math.min(1,(detected.scores[detected.best]||0)/18);risk-=Math.round(strength*28);risk-=Math.round(Math.max(0,ocrConf||0)*.18);risk+=Math.round(detected.ambiguity*28);const bm=bestMemoryMatch(detected.best,text,c);if(bm.score>.95)risk=0;else if(bm.score>.82)risk-=35;else if(bm.score>.65)risk-=20;if(mode!=='random'&&detected.best!==mode)risk=Math.max(risk,92);if(detected.best==='unknown')risk=Math.max(risk,80);return Math.max(0,Math.min(99,Math.round(risk)))}
+function render(detected,text,ocrConf){const lang=detected.best;const risk=calcRisk(detected,text,ocrConf);let judge='—',cls='auto';if(mode==='random'){judge='AUTO';cls='auto'}else if(lang===mode&&risk<80){judge='OK';cls='ok'}else{judge='NG';cls='ng'}$('judge').textContent=judge;$('judge').className='resValue '+cls;$('lang').textContent=langMap[lang]||'未知';$('lang').className='resValue '+(lang==='unknown'?'auto':'ok');$('risk').textContent=risk+'%';$('risk').className='resValue '+(risk<30?'riskLow':risk<70?'riskMid':'riskHigh');if(mode!=='random'&&judge==='OK'&&lang!=='unknown')addMemory(lang,text,detected.counts,ocrConf)}
+function captureCanvas(){const v=$('video'),c=$('canvas'),ctx=c.getContext('2d');const vw=v.videoWidth||1280,vh=v.videoHeight||720;const scale=zoom;const sw=vw/scale,sh=vh/scale,sx=(vw-sw)/2,sy=(vh-sh)/2;c.width=1280;c.height=Math.round(1280*sh/sw);ctx.drawImage(v,sx,sy,sw,sh,0,0,c.width,c.height);return c}
+function canvasToBlob(c){return new Promise(r=>c.toBlob(r,'image/jpeg',.9))}
+async function captureAndRecognize(){if(!stream||recognizing)return;setBusy(true,'识别中');$('flash').classList.add('on');setTimeout(()=>$('flash').classList.remove('on'),240);try{const c=captureCanvas();const blob=await canvasToBlob(c);$('preview').src=URL.createObjectURL(blob);$('preview').classList.remove('hidden');$('video').classList.add('hidden');if(!window.Tesseract)throw new Error('OCR库未加载');const res=await Tesseract.recognize(blob,'eng+jpn+kor',{logger:m=>{if(m.status==='recognizing text')setBusy(true,'识别中')}});const text=res.data.text||'';const conf=Number(res.data.confidence)||0;const detected=detectLanguage(text);render(detected,text,conf)}catch(e){$('judge').textContent='NG';$('judge').className='resValue ng';$('lang').textContent='未知';$('lang').className='resValue auto';$('risk').textContent='99%';$('risk').className='resValue riskHigh'}finally{setBusy(false)}}
+if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+window.addEventListener('pagehide',()=>stopCamera(false));
+</script>
+</body>
+</html>
