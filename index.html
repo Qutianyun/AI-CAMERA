@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AI CAMERA" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>AI CAMERA PWA V1</title>
+  <style>
+    :root{
+      --bg:#0f172a;--panel:#111827;--card:#1f2937;--text:#f8fafc;--muted:#94a3b8;
+      --line:#334155;--blue:#2563eb;--green:#16a34a;--red:#dc2626;--yellow:#d97706;--cyan:#0891b2;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;background:linear-gradient(180deg,#0f172a,#111827 58%,#020617);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",Arial,sans-serif;}
+    .app{max-width:980px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom));}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 12px}.title{font-size:24px;font-weight:900;letter-spacing:.4px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.badge{font-size:12px;color:#dbeafe;background:#1e3a8a;padding:7px 10px;border-radius:999px;white-space:nowrap}.card{background:rgba(31,41,55,.94);border:1px solid var(--line);border-radius:20px;padding:14px;margin:12px 0;box-shadow:0 14px 34px rgba(0,0,0,.24)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:720px){.row{grid-template-columns:1fr}.title{font-size:22px}}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px}select,button,input,textarea{width:100%;border:1px solid var(--line);border-radius:15px;background:#0b1220;color:var(--text);padding:12px;font-size:15px;outline:none}textarea{min-height:90px;resize:vertical;line-height:1.5}
+    button{background:var(--blue);border-color:var(--blue);font-weight:800;cursor:pointer;min-height:48px}button.secondary{background:#0b1220;border-color:#475569}button.good{background:var(--green);border-color:var(--green)}button.warn{background:var(--yellow);border-color:var(--yellow)}button.cyan{background:var(--cyan);border-color:var(--cyan)}button.danger{background:var(--red);border-color:var(--red)}button:disabled{opacity:.55;cursor:not-allowed}
+    .videoWrap{position:relative;overflow:hidden;border-radius:20px;background:#020617;border:1px solid var(--line);min-height:310px}.videoWrap video,.videoWrap canvas,.previewImg{width:100%;display:block;background:#020617}.previewImg{max-height:62vh;object-fit:contain}.guide{position:absolute;inset:8% 7%;border:2px dashed rgba(96,165,250,.95);border-radius:18px;pointer-events:none}.guide::after{content:"请将眼镜盒背面 / 标签放入框内";position:absolute;left:10px;top:10px;font-size:13px;background:rgba(15,23,42,.82);padding:6px 9px;border-radius:999px;color:#dbeafe}.corner{position:absolute;width:28px;height:28px;border-color:#93c5fd}.c1{left:-2px;top:-2px;border-left:4px solid;border-top:4px solid}.c2{right:-2px;top:-2px;border-right:4px solid;border-top:4px solid}.c3{left:-2px;bottom:-2px;border-left:4px solid;border-bottom:4px solid}.c4{right:-2px;bottom:-2px;border-right:4px solid;border-bottom:4px solid}
+    .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}@media(max-width:720px){.controls{grid-template-columns:1fr 1fr}.controls .full{grid-column:1 / -1}}
+    .result{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:720px){.result{grid-template-columns:1fr 1fr}}.metric{background:#0b1220;border:1px solid var(--line);border-radius:17px;padding:12px;min-height:78px}.metric .k{font-size:12px;color:var(--muted);margin-bottom:6px}.metric .v{font-size:22px;font-weight:900;word-break:break-word}.pass{color:#86efac}.fail{color:#fca5a5}.unknown{color:#fde68a}.textBox{white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;background:#0b1220;border:1px solid var(--line);border-radius:15px;padding:12px;color:#e5e7eb;font-size:13px;line-height:1.55}.hint{font-size:13px;color:#cbd5e1;line-height:1.55}.small{font-size:12px;color:var(--muted)}.status{padding:10px 12px;background:#0b1220;border:1px solid var(--line);border-radius:15px;color:#cbd5e1;margin-top:10px;font-size:13px;line-height:1.45}.hidden{display:none!important}.progressOuter{height:10px;background:#0b1220;border:1px solid var(--line);border-radius:999px;overflow:hidden}.progressInner{height:100%;width:0;background:#60a5fa;transition:width .2s ease}.pill{display:inline-block;margin:3px 6px 3px 0;padding:5px 8px;border-radius:999px;background:#0b1220;border:1px solid var(--line);font-size:12px;color:#d1d5db}.install{display:none}.install.show{display:block}.divider{height:1px;background:#334155;margin:12px 0}.installSteps{margin:0;padding-left:18px}.installSteps li{margin:6px 0}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#bfdbfe}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div><div class="title">AI CAMERA</div><div class="sub">PWA V1 · 眼镜盒背面文字 / 标签语言识别验证</div></div>
+    <div class="badge">Safari / Chrome</div>
+  </div>
+
+  <div id="installCard" class="card install">
+    <div class="hint"><b>添加到手机桌面：</b>iPhone Safari 点击底部分享按钮 → 添加到主屏幕 → 名称填 AI CAMERA。之后可像 App 一样从桌面打开。</div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div><label>本次客户要求语言</label><select id="expected"><option value="jpn">日文 Japanese</option><option value="kor">韩文 Korean</option><option value="eng">英文 English</option><option value="auto">仅识别，不判定</option></select></div>
+      <div><label>识别区域</label><select id="roi"><option value="full">整张画面</option><option value="center">中心区域</option><option value="top">上半区域</option><option value="bottom">下半区域 / 标签常见区域</option></select></div>
+    </div>
+    <div class="hint" style="margin-top:10px">建议：先选客户要求语言 → 打开摄像头 → 对准眼镜盒背面和标签 → 拍照识别。若摄像头无法启动，可使用“拍照/相册备用入口”。</div>
+  </div>
+
+  <div class="card">
+    <div class="videoWrap">
+      <video id="video" autoplay muted playsinline webkit-playsinline></video>
+      <canvas id="canvas" class="hidden"></canvas>
+      <img id="preview" class="previewImg hidden" alt="预览图" />
+      <div class="guide"><i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i></div>
+    </div>
+    <div class="controls">
+      <button id="startBtn">打开摄像头</button>
+      <button id="captureBtn" class="good" disabled>拍照识别</button>
+      <button id="stopBtn" class="secondary">关闭摄像头</button>
+      <label class="full" style="margin:0"><input id="fileInput" type="file" accept="image/*" capture="environment" style="display:none" /><button type="button" id="fileBtn" class="warn">拍照/相册备用入口</button></label>
+      <button id="clearBtn" class="secondary">清空结果</button>
+    </div>
+    <div id="status" class="status">状态：等待打开摄像头。请使用 HTTPS 链接访问。</div>
+    <div style="margin-top:10px" class="progressOuter"><div id="progress" class="progressInner"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="result">
+      <div class="metric"><div class="k">判定结果</div><div id="decision" class="v unknown">-</div></div>
+      <div class="metric"><div class="k">识别语言</div><div id="lang" class="v">-</div></div>
+      <div class="metric"><div class="k">OCR置信度</div><div id="conf" class="v">-</div></div>
+      <div class="metric"><div class="k">混合语言风险</div><div id="mixed" class="v">-</div></div>
+    </div>
+    <div style="margin-top:12px"><span id="counts"></span></div>
+  </div>
+
+  <div class="card">
+    <label>OCR识别文本</label>
+    <div id="text" class="textBox">暂无识别内容。</div>
+    <div class="divider"></div>
+    <label>手动测试输入，可粘贴文字验证语言判断逻辑</label>
+    <textarea id="manualText" placeholder="例如：これは商品です / 이것은 제품입니다 / This is product"></textarea>
+    <button id="manualBtn" class="cyan" style="margin-top:10px">使用输入文本判断</button>
+  </div>
+
+  <div class="card">
+    <div class="hint"><b>部署提醒：</b>请把本文件夹上传到 HTTPS 静态网站，例如 GitHub Pages、腾讯云 COS 静态网站或公司 HTTPS 服务器。iPhone 建议用 Safari 打开并添加到主屏幕。</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let stream = null;
+const langName = {eng:'英文', jpn:'日文', kor:'韩文', unknown:'无法判断'};
+function isStandalone(){ return window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches; }
+if(!isStandalone()) $('installCard').classList.add('show');
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{})); }
+function setStatus(msg){ $('status').textContent = '状态：' + msg; }
+function setProgress(p){ $('progress').style.width = Math.max(0, Math.min(100, p)) + '%'; }
+function stopCamera(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; } $('captureBtn').disabled=true; setStatus('摄像头已关闭。'); }
+async function startCamera(){
+  setProgress(0); $('preview').classList.add('hidden'); $('video').classList.remove('hidden');
+  if(location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1'){
+    setStatus('当前不是 HTTPS 环境，摄像头可能无法启动。请部署到 HTTPS 后再测试。');
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ setStatus('当前浏览器不支持实时摄像头，请使用备用入口。'); return; }
+  try{
+    stopCamera();
+    const constraints = { audio:false, video:{ facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:720} } };
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const video = $('video');
+    video.setAttribute('playsinline','true'); video.setAttribute('webkit-playsinline','true'); video.muted = true; video.srcObject = stream;
+    await video.play();
+    $('captureBtn').disabled=false; setStatus('摄像头已打开，请对准眼镜盒背面后点击拍照识别。');
+  }catch(err){ console.error(err); setStatus('摄像头打开失败：' + (err.message || err.name) + '。请检查 HTTPS、浏览器权限，或使用备用入口。'); }
+}
+function drawVideoToCanvas(){ const video=$('video'); return drawSourceToCanvas(video, video.videoWidth || 1280, video.videoHeight || 720); }
+function drawImageToCanvas(img){ return drawSourceToCanvas(img, img.naturalWidth, img.naturalHeight); }
+function drawSourceToCanvas(source, sw, sh){
+  const roi=$('roi').value; let sx=0, sy=0, w=sw, h=sh;
+  if(roi==='center'){ sx=sw*.12; sy=sh*.12; w=sw*.76; h=sh*.76; }
+  if(roi==='top'){ sx=0; sy=0; w=sw; h=sh*.55; }
+  if(roi==='bottom'){ sx=0; sy=sh*.45; w=sw; h=sh*.55; }
+  const maxW=1500; const scale=Math.min(1, maxW/w);
+  const canvas=$('canvas'), ctx=canvas.getContext('2d'); canvas.width=Math.max(1,Math.round(w*scale)); canvas.height=Math.max(1,Math.round(h*scale));
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(source, sx, sy, w, h, 0, 0, canvas.width, canvas.height);
+  return canvas;
+}
+function canvasToBlob(canvas){ return new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.92)); }
+function detectLanguage(text){
+  const clean = text || '';
+  const counts = {
+    jpnKana: (clean.match(/[\u3040-\u30ff]/g)||[]).length,
+    kor: (clean.match(/[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g)||[]).length,
+    latin: (clean.match(/[A-Za-z]/g)||[]).length,
+    cjk: (clean.match(/[\u4e00-\u9fff]/g)||[]).length,
+    digit: (clean.match(/[0-9]/g)||[]).length
+  };
+  const scores = { jpn: counts.jpnKana*3 + counts.cjk*.6, kor: counts.kor*3, eng: counts.latin*1.2 };
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  let best = sorted[0][0], bestScore = sorted[0][1], secondScore = sorted[1][1];
+  const totalLetters = counts.jpnKana + counts.kor + counts.latin + counts.cjk;
+  let mixed = (scores.jpn>3 && scores.kor>3) || (scores.eng>8 && (scores.jpn>5 || scores.kor>5));
+  if(totalLetters < 3 || bestScore < 3) best='unknown';
+  if(best!=='unknown' && secondScore > bestScore*0.55) mixed = true;
+  return {best, counts, mixed, scores};
+}
+function renderResult(text, confidence){
+  const expected=$('expected').value; const r=detectLanguage(text);
+  $('lang').textContent = langName[r.best] || r.best; $('conf').textContent = isFinite(confidence) ? Math.round(confidence)+'%' : '-';
+  $('mixed').textContent = r.mixed ? '有风险' : '低'; $('mixed').className = 'v ' + (r.mixed?'unknown':'pass');
+  let decision='仅识别', cls='unknown';
+  if(expected !== 'auto'){
+    if(r.best==='unknown'){ decision='需人工复核'; cls='unknown'; }
+    else if(r.best===expected && !r.mixed){ decision='PASS'; cls='pass'; }
+    else { decision='FAIL'; cls='fail'; }
+  }
+  $('decision').textContent=decision; $('decision').className='v '+cls;
+  $('counts').innerHTML = `<span class="pill">日文假名: ${r.counts.jpnKana}</span><span class="pill">韩文: ${r.counts.kor}</span><span class="pill">英文: ${r.counts.latin}</span><span class="pill">汉字: ${r.counts.cjk}</span><span class="pill">数字: ${r.counts.digit}</span>`;
+  $('text').textContent = text.trim() || '未识别到有效文字。请靠近、保持清晰、避免反光后重试。';
+}
+async function runOCR(blob){
+  if(!window.Tesseract){ setStatus('OCR库加载失败，请确认手机可以访问互联网/CDN。'); return; }
+  setProgress(2); setStatus('正在加载OCR模型并识别，首次可能需要几十秒...');
+  try{
+    const result = await Tesseract.recognize(blob, 'eng+jpn+kor', { logger:m=>{ if(m.status) setStatus(m.status); if(m.progress) setProgress(m.progress*100); } });
+    renderResult(result.data.text || '', result.data.confidence); setStatus('识别完成。'); setProgress(100);
+  }catch(err){ console.error(err); setStatus('OCR识别失败：' + (err.message || err.name)); }
+}
+async function captureAndOCR(){ if(!stream){ setStatus('请先打开摄像头。'); return; } const canvas=drawVideoToCanvas(); runOCR(await canvasToBlob(canvas)); }
+function clearResult(){ setProgress(0); $('decision').textContent='-'; $('decision').className='v unknown'; $('lang').textContent='-'; $('conf').textContent='-'; $('mixed').textContent='-'; $('mixed').className='v'; $('counts').innerHTML=''; $('text').textContent='暂无识别内容。'; $('manualText').value=''; setStatus('结果已清空。'); }
+$('startBtn').addEventListener('click', startCamera);
+$('stopBtn').addEventListener('click', stopCamera);
+$('captureBtn').addEventListener('click', captureAndOCR);
+$('clearBtn').addEventListener('click', clearResult);
+$('fileBtn').addEventListener('click', ()=>$('fileInput').click());
+$('manualBtn').addEventListener('click', ()=>{ renderResult($('manualText').value || '', NaN); setStatus('已根据手动输入文本完成判断。'); });
+$('fileInput').addEventListener('change', e=>{
+  const file=e.target.files && e.target.files[0]; if(!file) return; stopCamera();
+  const img=$('preview'); img.onload=async()=>{ $('video').classList.add('hidden'); img.classList.remove('hidden'); runOCR(await canvasToBlob(drawImageToCanvas(img))); };
+  img.src=URL.createObjectURL(file); setStatus('已选择图片，准备识别。');
+});
+window.addEventListener('pagehide', stopCamera);
+</script>
+</body>
+</html>
