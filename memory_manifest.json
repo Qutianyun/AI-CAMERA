@@ -1,0 +1,20 @@
+{
+  "version": "AI_CAMERA_CHAR_MEMORY_COMPACT_V2",
+  "created": "2026-05-20T01:33:17.033Z",
+  "roi": {
+    "x": 0.06,
+    "y": 0.13,
+    "w": 0.84,
+    "h": 0.42
+  },
+  "params": {
+    "white": 165,
+    "sharp": 18,
+    "minArea": 18,
+    "match": 0.7
+  },
+  "parts": [
+    "memory_part_001.json"
+  ],
+  "totalTemplates": 6555
+}
