@@ -1,0 +1,12 @@
+{
+  "version": "AI_CAMERA_KEYWORDS_CHUNKED_NOZIP_V2",
+  "created": "2026-05-20T05:59:16.353Z",
+  "chunks": [
+    "keywords_body_jpn_001.json",
+    "keywords_body_kor_001.json",
+    "keywords_body_eng_001.json",
+    "keywords_label_jpn_001.json",
+    "keywords_label_kor_001.json",
+    "keywords_label_eng_001.json"
+  ]
+}
